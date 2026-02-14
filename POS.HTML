@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار موضع السلة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .cart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M 20 60 L 30 60 L 50 140 L 150 140 L 170 60 L 180 60" stroke="%23adb5bd" stroke-width="4" fill="none"/><path d="M 30 60 L 50 140 L 150 140 L 170 60 Z" fill="%23e9ecef" opacity="0.3"/><circle cx="70" cy="160" r="8" fill="%23adb5bd"/><circle cx="130" cy="160" r="8" fill="%23adb5bd"/></svg>') center center no-repeat;
+            background-size: 80%;
+            background-position: center 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 75px;
+            border: 2px dashed blue; /* حد للتحقق */
+        }
+        .cart-items {
+            width: 55%;
+            padding: 5px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            align-items: end;
+            justify-items: center;
+            border: 2px dashed red; /* حد للتحقق */
+            background: rgba(255,0,0,0.1);
+        }
+        .cart-item {
+            padding: 5px;
+            font-size: 1.5em;
+        }
+        .info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 5px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2 style="text-align: center;">اختبار موضع المنتجات في السلة</h2>
+        
+        <div class="info">
+            <strong>التعليمات:</strong><br>
+            - الحد الأزرق = حدود السلة<br>
+            - الحد الأحمر = منطقة المنتجات<br>
+            - يجب أن تظهر المنتجات داخل جسم السلة
+        </div>
+
+        <div style="text-align: center; margin: 10px 0;">
+            <button onclick="addItem()">إضافة منتج</button>
+            <button onclick="clearItems()">مسح الكل</button>
+        </div>
+
+        <div class="cart-container">
+            <div class="cart-items" id="cartItems">
+                <!-- المنتجات ستظهر هنا -->
+            </div>
+        </div>
+
+        <div class="info" style="margin-top: 20px;">
+            <strong>عدد المنتجات:</strong> <span id="count">0</span><br>
+            <strong>الدقة:</strong> <span id="resolution"></span><br>
+            <strong>نوع الجهاز:</strong> <span id="device"></span>
+        </div>
+    </div>
+
+    <script>
+        const icons = ['🍎', '🍌', '🍊', '🍅', '🥔', '🥕', '🥛', '🍞', '🥚', '🧀', '🍗', '🐟'];
+        let items = [];
+
+        function addItem() {
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+            items.push(randomIcon);
+            updateDisplay();
+        }
+
+        function clearItems() {
+            items = [];
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const reversedItems = [...items].reverse();
+            
+            if (items.length === 0) {
+                cartItems.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; color: #999;">فارغة</div>';
+            } else {
+                cartItems.innerHTML = reversedItems.map(icon => 
+                    `<div class="cart-item">${icon}</div>`
+                ).join('');
+            }
+            
+            document.getElementById('count').textContent = items.length;
+        }
+
+        function updateInfo() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            document.getElementById('resolution').textContent = `${width} × ${height}`;
+            
+            let deviceType = 'حاسوب';
+            if (width < 480) deviceType = 'هاتف صغير';
+            else if (width < 768) deviceType = 'هاتف';
+            else if (width < 1024) deviceType = 'تابلت';
+            
+            document.getElementById('device').textContent = deviceType;
+        }
+
+        window.addEventListener('resize', updateInfo);
+        updateInfo();
+        updateDisplay();
+
+        // إضافة بعض العناصر للاختبار
+        for (let i = 0; i < 6; i++) {
+            addItem();
+        }
+    </script>
+</body>
+</html>

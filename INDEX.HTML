@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 لعبة التسوق الذكية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .onefd-header {
+            background: linear-gradient(135deg, #1a5490 0%, #2d6ca5 100%);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            border-bottom: 4px solid #ffd700;
+        }
+
+        .onefd-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+
+        .onefd-subtitle {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .level-selector {
+            background: #fff3cd;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #ffc107;
+        }
+
+        .level-selector h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .level-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .level-btn:active {
+            transform: scale(0.98);
+        }
+
+        .level-btn.easy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .level-btn.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .level-btn.hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .level-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .level-btn.active {
+            box-shadow: 0 0 0 3px #007bff;
+            transform: scale(1.05);
+        }
+
+        .game-area {
+            display: flex;
+            gap: 20px;
+            padding: 30px;
+            flex-wrap: wrap;
+        }
+
+        .products-section {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .products-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .product-card:active {
+            transform: scale(0.95);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-color: #28a745;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(40,167,69,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .product-price {
+            color: #28a745;
+            font-size: 1.3em;
+            font-weight: bold;
+            direction: ltr;
+        }
+
+        .add-animation {
+            animation: addToCart 0.6s ease-out;
+        }
+
+        @keyframes addToCart {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            100% { transform: scale(1); }
+        }
+
+        .cart-section {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        .cart-visual {
+            position: relative;
+            min-height: 350px;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px dashed #dee2e6;
+        }
+
+        .cart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M 20 60 L 30 60 L 50 140 L 150 140 L 170 60 L 180 60" stroke="%23adb5bd" stroke-width="4" fill="none"/><path d="M 30 60 L 50 140 L 150 140 L 170 60 Z" fill="%23e9ecef" opacity="0.3"/><circle cx="70" cy="160" r="8" fill="%23adb5bd"/><circle cx="130" cy="160" r="8" fill="%23adb5bd"/></svg>') center center no-repeat;
+            background-size: 80%;
+            background-position: center 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 75px;
+            gap: 5px;
+            overflow-y: auto;
+        }
+
+        .cart-items {
+            width: 55%;
+            padding: 5px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-flow: dense;
+            gap: 8px;
+            align-items: end;
+            justify-items: center;
+            max-height: 160px;
+            direction: ltr;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            /* للتحقق من الموضع، يمكن إلغاء التعليق عن السطر التالي مؤقتاً */
+            /* border: 2px dashed red; */
+        }
+
+        .cart-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cart-items::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            background: transparent;
+            border: none;
+            animation: dropIn 0.5s ease-out;
+            width: auto;
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .cart-item-icon {
+            font-size: 1.5em;
+        }
+
+        .cart-item-details {
+            text-align: right;
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .cart-item-price {
+            color: #28a745;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+            direction: ltr;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .checkout-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,123,255,0.4);
+        }
+
+        .checkout-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .clear-cart-btn {
+            width: 100%;
+            padding: 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .clear-cart-btn:hover {
+            background: #c82333;
+        }
+
+        .calculation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculation-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .problem-display {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-right: 5px solid #2196f3;
+        }
+
+        .problem-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            font-size: 1.2em;
+        }
+
+        .problem-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .problem-value {
+            color: #2196f3;
+            font-weight: bold;
+            direction: ltr;
+        }
+
+        .answer-section {
+            margin-bottom: 25px;
+        }
+
+        .answer-group {
+            margin-bottom: 20px;
+        }
+
+        .answer-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.3em;
+            text-align: center;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .answer-input.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .answer-input.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.4);
+        }
+
+        .close-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .close-btn:hover {
+            background: #5a6268;
+        }
+
+        .feedback-message {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 3px solid #28a745;
+            display: block;
+            animation: bounce 0.5s;
+        }
+
+        .feedback-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 3px solid #dc3545;
+            display: block;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+            font-size: 1.1em;
+            grid-column: 1 / -1;
+        }
+
+        .empty-cart-icon {
+            font-size: 5em;
+            margin-bottom: 15px;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .onefd-header {
+                padding: 15px 20px;
+            }
+
+            .onefd-title {
+                font-size: 1.2em;
+                margin-bottom: 6px;
+            }
+
+            .onefd-subtitle {
+                font-size: 1em;
+            }
+
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            .score-board {
+                gap: 10px;
+            }
+
+            .score-item {
+                padding: 8px 15px;
+                font-size: 1em;
+            }
+
+            .level-selector {
+                padding: 15px;
+            }
+
+            .level-selector h3 {
+                font-size: 1.2em;
+            }
+
+            .level-buttons {
+                flex-direction: column;
+            }
+
+            .level-btn {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            .game-area {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .products-section h2 {
+                font-size: 1.5em;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+            }
+
+            .product-card {
+                padding: 10px;
+            }
+
+            .product-icon {
+                font-size: 3em;
+            }
+
+            .product-name {
+                font-size: 0.9em;
+            }
+
+            .product-price {
+                font-size: 1.1em;
+            }
+
+            .cart-section {
+                position: relative;
+                top: 0;
+                margin-top: 20px;
+            }
+
+            .cart-header {
+                font-size: 1.5em;
+            }
+
+            .cart-container {
+                height: 250px;
+                background-size: 85%;
+                background-position: center 15px;
+                padding-bottom: 65px;
+            }
+
+            .cart-items {
+                width: 65%;
+                max-height: 140px;
+                gap: 6px;
+            }
+
+            .cart-item-icon {
+                font-size: 1.3em;
+            }
+
+            .checkout-btn {
+                font-size: 1.1em;
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5em;
+            }
+
+            .problem-display {
+                padding: 15px;
+            }
+
+            .problem-row {
+                font-size: 1em;
+                padding: 10px;
+                flex-direction: column;
+                gap: 5px;
+                text-align: center;
+            }
+
+            .answer-group label {
+                font-size: 1.1em;
+            }
+
+            .answer-input {
+                font-size: 1.2em;
+                padding: 12px;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+                font-size: 1.1em;
+                padding: 15px;
+            }
+
+            .feedback-message {
+                font-size: 1.1em;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .onefd-header {
+                padding: 12px 15px;
+            }
+
+            .onefd-title {
+                font-size: 1em;
+                margin-bottom: 5px;
+                line-height: 1.3;
+            }
+
+            .onefd-subtitle {
+                font-size: 0.85em;
+                line-height: 1.3;
+            }
+
+            header h1 {
+                font-size: 1.3em;
+            }
+
+            .score-board {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .score-item {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .product-icon {
+                font-size: 2.5em;
+            }
+
+            .cart-container {
+                height: 200px;
+                background-size: 75%;
+                background-position: center 10px;
+                padding-bottom: 55px;
+            }
+
+            .cart-items {
+                width: 50%;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
+                max-height: 120px;
+            }
+
+            .cart-item-icon {
+                font-size: 1.2em;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2em;
+            }
+
+            .problem-row {
+                font-size: 0.9em;
+            }
+
+            .checkout-btn span {
+                font-size: 1em !important;
+                padding: 2px 6px !important;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+
+            .game-area {
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 1400px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+
+        /* Landscape mode for mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .onefd-header {
+                padding: 10px 15px;
+            }
+
+            .onefd-title {
+                font-size: 1em;
+                margin-bottom: 4px;
+            }
+
+            .onefd-subtitle {
+                font-size: 0.85em;
+            }
+
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.3em;
+            }
+
+            .score-board {
+                margin-top: 10px;
+            }
+
+            .level-selector {
+                padding: 10px;
+            }
+
+            .game-area {
+                padding: 10px;
+            }
+
+            .cart-container {
+                height: 200px;
+            }
+
+            .modal-content {
+                max-height: 95vh;
+            }
+
+            .problem-display {
+                padding: 10px;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="onefd-header">
+            <div class="onefd-title">الدّيوان الوطني للتعليم و التكوين عن بعد</div>
+            <div class="onefd-subtitle">المرحلة الانتقالية إلى السنة الأولى متوسط</div>
+        </div>
+        
+        <header>
+            <h1>🛒 لعبة التسوق الذكية 🧮</h1>
+            <div class="score-board">
+                <div class="score-item">
+                    ⭐ النقاط: <span id="score">0</span>
+                </div>
+                <div class="score-item">
+                    ✅ صحيح: <span id="correct">0</span>
+                </div>
+                <div class="score-item">
+                    ❌ خطأ: <span id="wrong">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="level-selector">
+            <h3>🎮 اختر مستوى الصعوبة:</h3>
+            <div class="level-buttons">
+                <button class="level-btn easy active" data-level="easy">
+                    😊 سهل - حساب المجموع فقط
+                </button>
+                <button class="level-btn medium" data-level="medium">
+                    🤔 متوسط - حساب الباقي
+                </button>
+                <button class="level-btn hard" data-level="hard">
+                    🧠 صعب - مسألة كاملة
+                </button>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="products-section">
+                <h2>🏪 المنتجات المتوفرة</h2>
+                <div class="products-grid" id="productsGrid"></div>
+            </div>
+
+            <div class="cart-section">
+                <div class="cart-header">
+                    <span>🛒</span>
+                    <span>سلة التسوق</span>
+                </div>
+                <div class="cart-visual">
+                    <div class="cart-container">
+                        <div class="cart-items" id="cartItems">
+                            <div class="empty-cart">
+                                <div class="empty-cart-icon">🛒</div>
+                                <p>السلة فارغة<br>أضف المنتجات!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-total" style="display: none;">
+                    المجموع: <span id="cartTotal">0.00</span> DA
+                </div>
+                <button class="checkout-btn" id="checkoutBtn" disabled>
+                    <span style="font-size: 1.2em; font-weight: bold; background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 5px; margin-left: 8px;">DA</span> الدفع والحساب
+                </button>
+                <button class="clear-cart-btn" id="clearCartBtn">
+                    🗑️ إفراغ السلة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="calculation-modal" id="calculationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span style="font-size: 0.9em; font-weight: bold; background: rgba(0,123,255,0.2); padding: 3px 10px; border-radius: 8px; margin-left: 10px;">DA</span> صندوق الدفع 🧮</h2>
+            </div>
+
+            <div class="problem-display" id="problemDisplay"></div>
+
+            <div class="answer-section" id="answerSection"></div>
+
+            <div class="feedback-message" id="feedbackMessage"></div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn check-btn" id="checkAnswerBtn">
+                    ✓ تحقق من الإجابة
+                </button>
+                <button class="modal-btn close-btn" id="closeModalBtn">
+                    ← رجوع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // المنتجات المتوفرة
+        const products = [
+            { id: 1, name: 'تفاح', icon: '🍎', price: 300 },
+            { id: 2, name: 'موز', icon: '🍌', price: 400 },
+            { id: 3, name: 'برتقال', icon: '🍊', price: 180 },
+            { id: 4, name: 'طماطم', icon: '🍅', price: 80 },
+            { id: 5, name: 'بطاطا', icon: '🥔', price: 60 },
+            { id: 6, name: 'جزر', icon: '🥕', price: 70 },
+            { id: 7, name: 'حليب', icon: '🥛', price: 25 },
+            { id: 8, name: 'خبز', icon: '🍞', price: 10 },
+            { id: 9, name: 'بيض', icon: '🥚', price: 500 },
+            { id: 10, name: 'جبن', icon: '🧀', price: 250 },
+            { id: 11, name: 'دجاج', icon: '🍗', price: 400 },
+            { id: 12, name: 'سمك', icon: '🐟', price: 500 }
+        ];
+
+        // متغيرات اللعبة
+        let cart = [];
+        let currentLevel = 'easy';
+        let score = 0;
+        let correct = 0;
+        let wrong = 0;
+        let currentProblem = {};
+
+        // عناصر DOM
+        const productsGrid = document.getElementById('productsGrid');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const calculationModal = document.getElementById('calculationModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+        const scoreDisplay = document.getElementById('score');
+        const correctDisplay = document.getElementById('correct');
+        const wrongDisplay = document.getElementById('wrong');
+        const levelButtons = document.querySelectorAll('.level-btn');
+
+        // تهيئة اللعبة
+        function init() {
+            renderProducts();
+            setupEventListeners();
+            updateCart();
+        }
+
+        // عرض المنتجات
+        function renderProducts() {
+            productsGrid.innerHTML = products.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <div class="product-icon">${product.icon}</div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price.toFixed(2)} DA</div>
+                </div>
+            `).join('');
+        }
+
+        // إعداد الأحداث
+        function setupEventListeners() {
+            // إضافة منتج للسلة
+            productsGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.product-card');
+                if (card) {
+                    const productId = parseInt(card.dataset.id);
+                    addToCart(productId);
+                    card.classList.add('add-animation');
+                    setTimeout(() => card.classList.remove('add-animation'), 600);
+                    playSound('add');
+                }
+            });
+
+            // إفراغ السلة
+            clearCartBtn.addEventListener('click', () => {
+                cart = [];
+                updateCart();
+                playSound('clear');
+            });
+
+            // الدفع
+            checkoutBtn.addEventListener('click', openCalculationModal);
+
+            // إغلاق النافذة
+            closeModalBtn.addEventListener('click', closeCalculationModal);
+
+            // التحقق من الإجابة
+            checkAnswerBtn.addEventListener('click', checkAnswer);
+
+            // اختيار المستوى
+            levelButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    levelButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLevel = btn.dataset.level;
+                });
+            });
+
+            // Enter للتحقق
+            document.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && calculationModal.classList.contains('show')) {
+                    checkAnswer();
+                }
+            });
+        }
+
+        // إضافة منتج للسلة
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                cart.push({...product});
+                updateCart();
+            }
+        }
+
+        // تحديث السلة
+        function updateCart() {
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <p>السلة فارغة<br>أضف المنتجات!</p>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+            } else {
+                // عكس ترتيب المنتجات لتظهر من الأسفل للأعلى
+                const reversedCart = [...cart].reverse();
+                cartItems.innerHTML = reversedCart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="cart-item-icon">${item.icon}</div>
+                    </div>
+                `).join('');
+                checkoutBtn.disabled = false;
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotal.textContent = total.toFixed(2);
+        }
+
+        // فتح نافذة الحساب
+        function openCalculationModal() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            const paid = generatePaidAmount(total);
+            const change = paid - total;
+
+            currentProblem = { total, paid, change };
+
+            const problemDisplay = document.getElementById('problemDisplay');
+            const answerSection = document.getElementById('answerSection');
+
+            // عرض قائمة المشتريات
+            const itemsList = cart.map(item => `
+                <div class="problem-row">
+                    <span class="problem-label">${item.icon} ${item.name}</span>
+                    <span class="problem-value">${item.price.toFixed(2)} DA</span>
+                </div>
+            `).join('');
+
+            // عرض المسألة حسب المستوى
+            if (currentLevel === 'easy') {
+                // المستوى السهل: بدون عرض المبلغ المدفوع
+                problemDisplay.innerHTML = `
+                    <h3 style="text-align: center; color: #333; margin-bottom: 15px;">🛒 قائمة المشتريات:</h3>
+                    ${itemsList}
+                `;
+            } else {
+                // المستوى المتوسط والصعب: عرض المبلغ المدفوع
+                problemDisplay.innerHTML = `
+                    <h3 style="text-align: center; color: #333; margin-bottom: 15px;">🛒 قائمة المشتريات:</h3>
+                    ${itemsList}
+                    <hr style="margin: 15px 0; border: 2px dashed #dee2e6;">
+                    <div class="problem-row">
+                        <span class="problem-label">💵 المبلغ المدفوع:</span>
+                        <span class="problem-value">${paid.toFixed(2)} DA</span>
+                    </div>
+                `;
+            }
+
+            // عرض حقول الإجابة حسب المستوى
+            if (currentLevel === 'easy') {
+                answerSection.innerHTML = `
+                    <div class="answer-group">
+                        <label>📊 احسب المجموع الكلي:</label>
+                        <input type="number" step="0.01" class="answer-input" id="totalAnswer" placeholder="أدخل المجموع">
+                    </div>
+                `;
+            } else if (currentLevel === 'medium') {
+                answerSection.innerHTML = `
+                    <div class="answer-group">
+                        <label>💰 احسب الباقي:</label>
+                        <input type="number" step="0.01" class="answer-input" id="changeAnswer" placeholder="أدخل الباقي">
+                    </div>
+                `;
+            } else { // hard
+                answerSection.innerHTML = `
+                    <div class="answer-group">
+                        <label>📊 المجموع الكلي:</label>
+                        <input type="number" step="0.01" class="answer-input" id="totalAnswer" placeholder="أدخل المجموع">
+                    </div>
+                    <div class="answer-group">
+                        <label>💰 الباقي:</label>
+                        <input type="number" step="0.01" class="answer-input" id="changeAnswer" placeholder="أدخل الباقي">
+                    </div>
+                `;
+            }
+
+            // إخفاء رسالة التغذية الراجعة
+            document.getElementById('feedbackMessage').style.display = 'none';
+            document.getElementById('feedbackMessage').className = 'feedback-message';
+
+            calculationModal.classList.add('show');
+
+            // التركيز على أول حقل
+            setTimeout(() => {
+                const firstInput = answerSection.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }, 100);
+        }
+
+        // إغلاق نافذة الحساب
+        function closeCalculationModal() {
+            calculationModal.classList.remove('show');
+        }
+
+        // توليد مبلغ مدفوع
+        function generatePaidAmount(total) {
+            // نولد مبلغ أكبر من المجموع
+            const extra = [50, 100, 200, 500, 1000];
+            const randomExtra = extra[Math.floor(Math.random() * extra.length)];
+            return total + randomExtra;
+        }
+
+        // التحقق من الإجابة
+        function checkAnswer() {
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            let isCorrect = true;
+            let errorCount = 0;
+
+            if (currentLevel === 'easy') {
+                const totalAnswer = parseFloat(document.getElementById('totalAnswer').value);
+                const totalInput = document.getElementById('totalAnswer');
+                
+                if (Math.abs(totalAnswer - currentProblem.total) < 0.01) {
+                    totalInput.classList.remove('incorrect');
+                    totalInput.classList.add('correct');
+                } else {
+                    totalInput.classList.remove('correct');
+                    totalInput.classList.add('incorrect');
+                    isCorrect = false;
+                    errorCount++;
+                }
+            } else if (currentLevel === 'medium') {
+                const changeAnswer = parseFloat(document.getElementById('changeAnswer').value);
+                const changeInput = document.getElementById('changeAnswer');
+                
+                if (Math.abs(changeAnswer - currentProblem.change) < 0.01) {
+                    changeInput.classList.remove('incorrect');
+                    changeInput.classList.add('correct');
+                } else {
+                    changeInput.classList.remove('correct');
+                    changeInput.classList.add('incorrect');
+                    isCorrect = false;
+                    errorCount++;
+                }
+            } else { // hard
+                const totalAnswer = parseFloat(document.getElementById('totalAnswer').value);
+                const changeAnswer = parseFloat(document.getElementById('changeAnswer').value);
+                const totalInput = document.getElementById('totalAnswer');
+                const changeInput = document.getElementById('changeAnswer');
+                
+                if (Math.abs(totalAnswer - currentProblem.total) < 0.01) {
+                    totalInput.classList.remove('incorrect');
+                    totalInput.classList.add('correct');
+                } else {
+                    totalInput.classList.remove('correct');
+                    totalInput.classList.add('incorrect');
+                    isCorrect = false;
+                    errorCount++;
+                }
+                
+                if (Math.abs(changeAnswer - currentProblem.change) < 0.01) {
+                    changeInput.classList.remove('incorrect');
+                    changeInput.classList.add('correct');
+                } else {
+                    changeInput.classList.remove('correct');
+                    changeInput.classList.add('incorrect');
+                    isCorrect = false;
+                    errorCount++;
+                }
+            }
+
+            if (isCorrect) {
+                // عرض النتيجة بعد الإجابة الصحيحة حسب المستوى
+                const problemDisplay = document.getElementById('problemDisplay');
+                const itemsList = cart.map(item => `
+                    <div class="problem-row">
+                        <span class="problem-label">${item.icon} ${item.name}</span>
+                        <span class="problem-value">${item.price.toFixed(2)} DA</span>
+                    </div>
+                `).join('');
+                
+                // عرض النتيجة حسب المستوى
+                if (currentLevel === 'easy') {
+                    // المستوى السهل: عرض المجموع فقط
+                    problemDisplay.innerHTML = `
+                        <h3 style="text-align: center; color: #333; margin-bottom: 15px;">🛒 قائمة المشتريات:</h3>
+                        ${itemsList}
+                        <hr style="margin: 15px 0; border: 2px dashed #dee2e6;">
+                        <div class="problem-row" style="background: #d4edda; border: 2px solid #28a745;">
+                            <span class="problem-label">🛒 المجموع الكلي:</span>
+                            <span class="problem-value">${currentProblem.total.toFixed(2)} DA</span>
+                        </div>
+                    `;
+                } else if (currentLevel === 'medium') {
+                    // المستوى المتوسط: عرض المجموع والمبلغ المدفوع والباقي
+                    problemDisplay.innerHTML = `
+                        <h3 style="text-align: center; color: #333; margin-bottom: 15px;">🛒 قائمة المشتريات:</h3>
+                        ${itemsList}
+                        <hr style="margin: 15px 0; border: 2px dashed #dee2e6;">
+                        <div class="problem-row">
+                            <span class="problem-label">🛒 المجموع الكلي:</span>
+                            <span class="problem-value">${currentProblem.total.toFixed(2)} DA</span>
+                        </div>
+                        <div class="problem-row">
+                            <span class="problem-label">💵 المبلغ المدفوع:</span>
+                            <span class="problem-value">${currentProblem.paid.toFixed(2)} DA</span>
+                        </div>
+                        <div class="problem-row" style="background: #d4edda; border: 2px solid #28a745;">
+                            <span class="problem-label">💰 الباقي:</span>
+                            <span class="problem-value">${currentProblem.change.toFixed(2)} DA</span>
+                        </div>
+                    `;
+                } else {
+                    // المستوى الصعب: عرض كل شيء
+                    problemDisplay.innerHTML = `
+                        <h3 style="text-align: center; color: #333; margin-bottom: 15px;">🛒 قائمة المشتريات:</h3>
+                        ${itemsList}
+                        <hr style="margin: 15px 0; border: 2px dashed #dee2e6;">
+                        <div class="problem-row" style="background: #d4edda;">
+                            <span class="problem-label">🛒 المجموع الكلي:</span>
+                            <span class="problem-value">${currentProblem.total.toFixed(2)} DA</span>
+                        </div>
+                        <div class="problem-row">
+                            <span class="problem-label">💵 المبلغ المدفوع:</span>
+                            <span class="problem-value">${currentProblem.paid.toFixed(2)} DA</span>
+                        </div>
+                        <div class="problem-row" style="background: #d4edda; border: 2px solid #28a745;">
+                            <span class="problem-label">💰 الباقي:</span>
+                            <span class="problem-value">${currentProblem.change.toFixed(2)} DA</span>
+                        </div>
+                    `;
+                }
+                
+                feedbackMessage.textContent = '🎉 ممتاز! إجابة صحيحة! 🎉';
+                feedbackMessage.className = 'feedback-message success';
+                correct++;
+                score += (currentLevel === 'easy' ? 10 : currentLevel === 'medium' ? 20 : 30);
+                correctDisplay.textContent = correct;
+                scoreDisplay.textContent = score;
+                playSound('success');
+                createConfetti();
+                
+                setTimeout(() => {
+                    closeCalculationModal();
+                    cart = [];
+                    updateCart();
+                }, 2000);
+            } else {
+                feedbackMessage.textContent = '❌ حاول مرة أخرى! تحقق من حساباتك 🤔';
+                feedbackMessage.className = 'feedback-message error';
+                wrong++;
+                wrongDisplay.textContent = wrong;
+                playSound('error');
+            }
+        }
+
+        // المؤقت
+        // مؤثرات صوتية بسيطة
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (type === 'add') {
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.1;
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'success') {
+                oscillator.frequency.value = 600;
+                gainNode.gain.value = 0.2;
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'error') {
+                oscillator.frequency.value = 200;
+                gainNode.gain.value = 0.2;
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } else if (type === 'clear') {
+                oscillator.frequency.value = 400;
+                gainNode.gain.value = 0.1;
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.15);
+            }
+        }
+
+        // كونفيتي
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // بدء اللعبة
+        init();
+    </script>
+</body>
+</html>
